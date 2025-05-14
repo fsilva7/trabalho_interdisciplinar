@@ -1,4 +1,5 @@
 <?php
+// backend/login_user.php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
@@ -8,16 +9,20 @@ require_once 'db.php';
 
 try {
     $data = json_decode(file_get_contents('php://input'), true);
-    if (!isset($data['id']) || !isset($data['status'])) {
+    if (!isset($data['user'], $data['pass'])) {
         throw new Exception('Dados incompletos');
     }
-    $id = $data['id'];
-    $status = $data['status'];
-    $stmt = $conn->prepare('UPDATE agendamentos SET status = ? WHERE id = ?');
-    $stmt->execute([$status, $id]);
+    $user = $data['user'];
+    $pass = $data['pass'];
+    $stmt = $conn->prepare('SELECT password FROM admin_users WHERE username = ? OR email = ?');
+    $stmt->execute([$user, $user]);
+    $row = $stmt->fetch();
+    if (!$row || !password_verify($pass, $row['password'])) {
+        throw new Exception('Usuário ou senha inválidos!');
+    }
     echo json_encode(['success' => true]);
 } catch (Exception $e) {
-    http_response_code(500);
+    http_response_code(401);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 $conn = null;
