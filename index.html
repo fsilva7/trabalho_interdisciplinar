@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Agendamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="landing-page">    <div class="container landing-container">
+        <div class="hero-section">
+            <h1 class="animate-title">
+                <i class="fas fa-calendar-check"></i>
+                Sistema de Agendamentos
+            </h1>
+            <p class="hero-subtitle">Gerencie seus compromissos de forma simples e eficiente</p>
+        </div>
+        
+        <div class="landing-buttons">
+            <a href="agendamentos.html" class="landing-btn schedule-btn">
+                <div class="btn-content">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Fazer Agendamento</span>
+                    <small>Agende seu horário aqui</small>
+                </div>
+                <div class="btn-hover-effect"></div>
+            </a>
+            
+            <a href="admin.html" class="landing-btn admin-btn">
+                <div class="btn-content">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Área Administrativa</span>
+                    <small>Gerenciar agendamentos</small>
+                </div>
+                <div class="btn-hover-effect"></div>
+            </a>
+        </div>
+
+        <div class="features-section">
+            <div class="feature-card">
+                <i class="fas fa-clock"></i>
+                <h3>Rápido e Fácil</h3>
+                <p>Agende em poucos cliques</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Responsivo</h3>
+                <p>Funciona em qualquer dispositivo</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Seguro</h3>
+                <p>Seus dados estão protegidos</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="landing-footer">
+        <p>&copy; 2025 Sistema de Agendamentos | Desenvolvido com <i class="fas fa-heart"></i></p>
+    </footer>
+    <script>
+        document.querySelectorAll('.landing-btn').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / btn.clientWidth) * 100;
+                const y = ((e.clientY - rect.top) / btn.clientHeight) * 100;
+                btn.querySelector('.btn-hover-effect').style.setProperty('--x', x + '%');
+                btn.querySelector('.btn-hover-effect').style.setProperty('--y', y + '%');
+            });
+        });
+    </script>
+</body>
+</html>

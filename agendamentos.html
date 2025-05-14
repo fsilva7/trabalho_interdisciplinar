@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Agendamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="scheduling-page">
+    <div class="scheduling-wrapper"><nav>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </nav>
+        
+        <header>
+            <h1><i class="fas fa-calendar-alt"></i> Sistema de Agendamentos</h1>
+            <p class="subtitle">Agende seu horário de forma rápida e fácil</p>
+        </header>
+
+        <div class="form-container">
+            <form id="appointmentForm">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="nome" placeholder="Seu nome" required />
+                </div>                <div class="form-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="telefone" placeholder="(00) 00000-0000" required 
+                           pattern="\([0-9]{2}\) [0-9]{5}-[0-9]{4}"
+                           title="Digite um telefone no formato (00) 00000-0000" />
+                </div>                <div class="form-group">
+                    <i class="fas fa-calendar"></i>
+                    <input type="text" id="data" placeholder="Selecione a data" required readonly />
+                </div>
+
+                <div class="horarios-disponiveis">
+                    <label><i class="fas fa-clock"></i> Horários Disponíveis</label>
+                    <div class="horarios-grid" id="horariosGrid">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <i class="fas fa-cut"></i>
+                    <input type="text" id="servico" placeholder="Qual serviço deseja?" required />
+                </div>
+
+                <div class="form-group">
+                    <i class="fas fa-tasks"></i>
+                    <select id="status">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                <button type="submit">
+                    <i class="fas fa-calendar-plus"></i> Agendar Horário
+                </button>
+            </form>
+        </div>        <div id="confirmationMessage" class="confirmation-message" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <h3>Agendamento Realizado!</h3>
+            <p>Em breve entraremos em contato para confirmar seu horário.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Sistema de Agendamentos. Todos os direitos reservados.</p>
+    </footer>    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>
