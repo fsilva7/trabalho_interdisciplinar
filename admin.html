@@ -8,18 +8,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css" />
     <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-    <div class="container admin-container">
+<body class="admin-page">
+    <div class="admin-panel">
         <nav>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-home"></i> Voltar para Início
+            </a>
             <a href="agendamentos.html" class="back-link">
                 <i class="fas fa-arrow-left"></i> Voltar para Agendamentos
             </a>
         </nav>
-
-        <header>
-            <h1><i class="fas fa-user-shield"></i> Painel Administrativo</h1>
-        </header>
-
+        <h2><i class="fas fa-user-shield"></i> Painel Administrativo</h2>
         <div class="admin-controls">
             <div class="filter-section">
                 <select id="statusFilter">
@@ -28,17 +27,14 @@
                     <option value="confirmado">Confirmados</option>
                     <option value="cancelado">Cancelados</option>
                 </select>
-
                 <input type="date" id="dateFilter" />
-                
-                <button id="refreshButton" class="refresh-btn">
+                <button id="refreshButton" class="admin-action-btn">
                     <i class="fas fa-sync"></i> Atualizar
                 </button>
             </div>
         </div>
-
         <div class="appointments-table-container">
-            <table id="appointmentsTable" class="appointments-table">
+            <table id="appointmentsTable" class="admin-table">
                 <thead>
                     <tr>
                         <th>Nome</th>
@@ -56,7 +52,6 @@
             </table>
         </div>
     </div>
-
     <script src="admin.js"></script>
 </body>
 </html>

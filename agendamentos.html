@@ -36,25 +36,17 @@
                     <input type="text" id="data" placeholder="Selecione a data" required readonly />
                 </div>
 
-                <div class="horarios-disponiveis">
+                <div class="horarios-disponiveis dropdown-horarios">
                     <label><i class="fas fa-clock"></i> Horários Disponíveis</label>
-                    <div class="horarios-grid" id="horariosGrid">
-                        <!-- Preenchido via JavaScript -->
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                            Selecione um horário
+                        </button>
+                        <div class="dropdown-menu" id="dropdownHorarios" aria-labelledby="dropdownMenuButton">
+                            <!-- Opções preenchidas via JavaScript -->
+                        </div>
+                        <input type="hidden" id="hora" name="hora" required />
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <i class="fas fa-cut"></i>
-                    <input type="text" id="servico" placeholder="Qual serviço deseja?" required />
-                </div>
-
-                <div class="form-group">
-                    <i class="fas fa-tasks"></i>
-                    <select id="status">
-                        <option value="Pendente">Pendente</option>
-                        <option value="Confirmado">Confirmado</option>
-                        <option value="Cancelado">Cancelado</option>
-                    </select>
                 </div>
 
                 <button type="submit">
@@ -65,6 +57,10 @@
             <i class="fas fa-check-circle"></i>
             <h3>Agendamento Realizado!</h3>
             <p>Em breve entraremos em contato para confirmar seu horário.</p>
+        </div>
+
+        <div class="appointments-list" id="appointmentsList">
+            <!-- Lista de agendamentos será preenchida via JavaScript -->
         </div>
     </div>
 

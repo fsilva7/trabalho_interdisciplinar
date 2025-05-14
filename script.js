@@ -21,34 +21,89 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gerar slots de horário
+    // Gerar opções de horário para dropdown customizado
     function generateTimeSlots(selectedDate) {
-        const horariosGrid = document.getElementById('horariosGrid');
-        const startHour = 8;
-        const endHour = 18;
-        const interval = 30; // minutos
-        
-        horariosGrid.innerHTML = '';
-        
-        for (let hour = startHour; hour < endHour; hour++) {
-            for (let minute = 0; minute < 60; minute += interval) {
-                const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'horario-btn';
-                button.textContent = timeStr;
-                
-                button.addEventListener('click', function() {
-                    const allButtons = horariosGrid.querySelectorAll('.horario-btn');
-                    allButtons.forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                    horaInput.value = timeStr;
-                });
-                
-                horariosGrid.appendChild(button);
+        const dropdownMenu = document.getElementById('dropdownHorarios');
+        const dropdownToggle = document.getElementById('dropdownMenuButton');
+        const horaInput = document.getElementById('hora');
+        // Horários fixos das 09:00 às 16:00
+        const horarios = [
+            '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'
+        ];
+        dropdownMenu.innerHTML = '';
+        dropdownToggle.textContent = 'Selecione um horário';
+        horaInput.value = '';
+
+        const today = new Date();
+        // Corrigir para comparar apenas datas, não datas e horas
+        const selected = new Date(selectedDate + 'T00:00:00');
+        const isToday = today.toISOString().slice(0, 10) === selectedDate;
+        let hasOption = false;
+
+        horarios.forEach(timeStr => {
+            let show = true;
+            if (isToday) {
+                const [h, m] = timeStr.split(':').map(Number);
+                // Corrigir: só mostrar horários futuros para hoje
+                if (h < today.getHours() || (h === today.getHours() && m <= today.getMinutes())) {
+                    show = false;
+                }
             }
+            if (show) {
+                hasOption = true;
+                const option = document.createElement('a');
+                option.className = 'dropdown-item';
+                option.textContent = timeStr;
+                option.href = '#';
+                option.onclick = function(e) {
+                    e.preventDefault();
+                    dropdownToggle.textContent = timeStr;
+                    horaInput.value = timeStr;
+                    dropdownMenu.classList.remove('show');
+                };
+                dropdownMenu.appendChild(option);
+            }
+        });
+        if (!hasOption) {
+            const noOption = document.createElement('span');
+            noOption.className = 'dropdown-item disabled';
+            noOption.textContent = 'Nenhum horário disponível';
+            dropdownMenu.appendChild(noOption);
         }
     }
+
+    // Dropdown toggle (corrigido para funcionar após DOM pronto)
+    const toggle = document.getElementById('dropdownMenuButton');
+    const menu = document.getElementById('dropdownHorarios');
+    if (toggle && menu) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            menu.classList.toggle('show');
+        });
+        document.addEventListener('click', function(e) {
+            if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+    }
+
+    // Atualizar Flatpickr para não permitir datas passadas
+    flatpickr(dataInput, {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        disable: [
+            function(date) {
+                // Desabilitar domingos (0)
+                return (date.getDay() === 0);
+            }
+        ],
+        locale: {
+            firstDayOfWeek: 0
+        },
+        onChange: function(selectedDates, dateStr) {
+            generateTimeSlots(dateStr);
+        }
+    });
 
     // Adicionar animação ao formulário
     form.classList.add('fade-in');
@@ -75,9 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nome: document.getElementById('nome').value,
             telefone: telefoneInput.value.replace(/\D/g, ''),
             data: dataInput.value,
-            hora: horaInput.value,
-            servico: document.getElementById('servico').value,
-            status: 'Pendente'
+            hora: horaInput.value
         };
 
         // Validar telefone
@@ -172,4 +225,79 @@ document.addEventListener('DOMContentLoaded', function() {
             this.parentElement.classList.remove('input-focused');
         });
     });
+
+    // Função para carregar e exibir agendamentos
+    function carregarAgendamentos() {
+        const lista = document.getElementById('appointmentsList');
+        if (!lista) return;
+        lista.innerHTML = '<p>Carregando agendamentos...</p>';
+        fetch('backend/list_appointments.php')
+            .then(res => res.json())
+            .then(agendamentos => {
+                if (!Array.isArray(agendamentos) || agendamentos.length === 0) {
+                    lista.innerHTML = '<p>Nenhum agendamento encontrado.</p>';
+                    return;
+                }
+                lista.innerHTML = '';
+                agendamentos.forEach(ag => {
+                    const item = document.createElement('div');
+                    item.className = 'appointment-item';
+                    item.innerHTML = `
+                        <strong>${ag.nome}</strong> - ${ag.telefone}<br>
+                        <span>${ag.data} às ${ag.hora} | ${ag.servico} | <b>${ag.status}</b></span>
+                        <button class="delete-btn" data-id="${ag.id}"><i class="fas fa-trash"></i> Excluir</button>
+                    `;
+                    lista.appendChild(item);
+                });
+            })
+            .catch(() => {
+                lista.innerHTML = '<p>Erro ao carregar agendamentos.</p>';
+            });
+    }
+
+    // Evento para deletar agendamento
+    if (document.getElementById('appointmentsList')) {
+        document.getElementById('appointmentsList').addEventListener('click', function(e) {
+            if (e.target.closest('.delete-btn')) {
+                const btn = e.target.closest('.delete-btn');
+                const id = btn.getAttribute('data-id');
+                if (confirm('Tem certeza que deseja excluir este agendamento?')) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+                    fetch('backend/delete_appointment.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            carregarAgendamentos();
+                        } else {
+                            alert('Erro ao excluir: ' + (data.error || 'Erro desconhecido'));
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-trash"></i> Excluir';
+                        }
+                    })
+                    .catch(() => {
+                        alert('Erro ao excluir agendamento.');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-trash"></i> Excluir';
+                    });
+                }
+            }
+        });
+        // Carregar agendamentos ao abrir a página
+        carregarAgendamentos();
+    }
+
+    // Corrigir: garantir que generateTimeSlots seja chamado ao abrir a página com a data atual
+    if (dataInput.value) {
+        generateTimeSlots(dataInput.value);
+    } else {
+        const hoje = new Date();
+        const dataHoje = hoje.toISOString().slice(0, 10);
+        dataInput.value = dataHoje;
+        generateTimeSlots(dataHoje);
+    }
 });
