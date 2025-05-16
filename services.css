@@ -1,0 +1,304 @@
+/* Service Selection Styles */
+.services-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.barbershop-theme .services-container {
+    border-top: 4px solid #2c3e50;
+}
+
+.salon-theme .services-container {
+    border-top: 4px solid #ff758c;
+}
+
+.service-category {
+    margin-bottom: 2rem;
+}
+
+.service-category h3 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #eee;
+}
+
+.services-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.service-category {
+    margin-bottom: 2rem;
+}
+
+.service-category h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.service-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.service-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.service-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.service-item input[type="checkbox"] {
+    margin-right: 1rem;
+    width: 20px;
+    height: 20px;
+}
+
+.service-item label {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.service-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.service-price {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.service-duration {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.service-totals {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.service-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.service-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-card.selected {
+    background: #e8f4ff;
+    border-color: #0066cc;
+}
+
+.barbershop-theme .service-card.selected {
+    background: #2c3e50;
+    border-color: #34495e;
+    color: white;
+}
+
+.salon-theme .service-card.selected {
+    background: #ff758c;
+    border-color: #ff7eb3;
+    color: white;
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-info h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.service-card.selected .service-info h4 {
+    color: white;
+}
+
+.service-info .price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0066cc;
+    margin: 0.5rem 0;
+}
+
+.service-card.selected .service-info .price {
+    color: #fff;
+}
+
+.service-info .duration {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+.service-card.selected .service-info .duration {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.select-service {
+    background: transparent;
+    border: 2px solid #0066cc;
+    color: #0066cc;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.service-card.selected .select-service {
+    background: #fff;
+    border-color: #fff;
+    color: #0066cc;
+}
+
+.select-service:hover {
+    background: #0066cc;
+    color: white;
+}
+
+/* Estilos específicos para o salão */
+.salon-theme .service-category h3 {
+    color: #ff758c;
+    border-bottom: 2px solid #ff758c;
+}
+
+.salon-theme .service-item {
+    border-left: 4px solid #ff758c;
+}
+
+.salon-theme .service-item.selected {
+    background-color: #fff0f3;
+    border: 1px solid #ff758c;
+}
+
+.salon-theme .service-item:hover {
+    border-color: #ff758c;
+    box-shadow: 0 2px 8px rgba(255, 117, 140, 0.2);
+}
+
+/* Ícones específicos para categorias do salão */
+.salon-theme .category-title i {
+    background: linear-gradient(45deg, #ff758c, #ff7eb3);    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Booking Summary Styles */
+.booking-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.booking-summary h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.summary-content {
+    color: #666;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-duration, .total-price {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .service-selector {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .service-list {
+        grid-template-columns: 1fr;
+    }
+
+    .service-totals {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .services-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .services-list {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-total {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

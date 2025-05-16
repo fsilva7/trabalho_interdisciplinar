@@ -4,33 +4,71 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Administrativo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body class="login-page">
     <div class="login-container">
-        <a href="index.html" class="back-link return-link-login" title="Voltar ao início">
+        <a href="index.html" class="back-link">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
-        <h2>Área Administrativa</h2>
+        
+        <div class="login-header">
+            <i class="fas fa-user-shield"></i>
+            <h1>Área Administrativa</h1>
+            <p>Gerencie os agendamentos do seu estabelecimento</p>
+        </div>
+
         <div id="loginFormContainer">
-            <form id="loginForm">
-                <input type="text" id="loginUser" placeholder="Usuário" required />
-                <input type="password" id="loginPass" placeholder="Senha" required />
-                <button type="submit">Entrar</button>
-                <p class="switch-link">Não tem conta? <a href="#" id="showRegister">Registrar</a></p>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUser" placeholder="Seu usuário" required />
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPass" placeholder="Sua senha" required />
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <p class="switch-link">
+                    Não tem uma conta? 
+                    <a href="#" id="showRegister">Criar conta</a>
+                </p>
             </form>
         </div>
+
         <div id="registerFormContainer" style="display:none;">
-            <form id="registerForm">
-                <input type="text" id="registerUser" placeholder="Usuário" required />
-                <input type="email" id="registerEmail" placeholder="E-mail" required />
-                <input type="password" id="registerPass" placeholder="Senha" required />
-                <button type="submit">Registrar</button>
-                <p class="switch-link">Já tem conta? <a href="#" id="showLogin">Entrar</a></p>
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="registerUser" placeholder="Escolha um usuário" required />
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="registerEmail" placeholder="Seu e-mail" required />
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="registerPass" placeholder="Crie uma senha" required />
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Criar Conta
+                </button>
+                <p class="switch-link">
+                    Já tem uma conta? 
+                    <a href="#" id="showLogin">Fazer login</a>
+                </p>
             </form>
         </div>
-        <div id="loginError" class="error-message" style="display:none;"></div>
+
+        <div id="loginError" class="error-message" style="display:none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <span></span>
+        </div>
     </div>
+
     <script src="login.js"></script>
 </body>
 </html>

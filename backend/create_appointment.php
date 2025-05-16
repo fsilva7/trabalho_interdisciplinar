@@ -6,27 +6,57 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'db.php';
 
-// Apenas lógica de login e registro (exemplo de endpoint de registro)
 try {
     $data = json_decode(file_get_contents('php://input'), true);
-    if (!isset($data['user'], $data['email'], $data['pass'])) {
+    
+    // Validate required fields
+    if (!isset($data['nome'], $data['telefone'], $data['data'], $data['hora'], $data['services'], $data['totalPrice'], $data['totalDuration'], $data['sector'])) {
         throw new Exception('Dados incompletos');
     }
-    $user = $data['user'];
-    $email = $data['email'];
-    $pass = password_hash($data['pass'], PASSWORD_DEFAULT);
-    // Verifica se já existe
-    $stmt = $conn->prepare('SELECT 1 FROM admin_users WHERE username = ? OR email = ?');
-    $stmt->execute([$user, $email]);
-    if ($stmt->fetch()) {
-        throw new Exception('Usuário ou e-mail já existe!');
+
+    // Start transaction
+    $conn->beginTransaction();
+
+    // Insert appointment
+    $stmt = $conn->prepare('INSERT INTO appointments (nome, telefone, data, hora, sector, total_price, total_duration, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    $stmt->execute([
+        $data['nome'],
+        $data['telefone'],
+        $data['data'],
+        $data['hora'],
+        $data['sector'],
+        $data['totalPrice'],
+        $data['totalDuration'],
+        'pendente'
+    ]);
+    
+    $appointmentId = $conn->lastInsertId();
+
+    // Insert services
+    $stmtServices = $conn->prepare('INSERT INTO appointment_services (appointment_id, service_name, price, duration) VALUES (?, ?, ?, ?)');
+    
+    foreach ($data['services'] as $service) {
+        $stmtServices->execute([
+            $appointmentId,
+            $service['name'],
+            $service['price'],
+            $service['duration']
+        ]);
     }
-    $stmt = $conn->prepare('INSERT INTO admin_users (username, email, password) VALUES (?, ?, ?)');
-    $stmt->execute([$user, $email, $pass]);
-    echo json_encode(['success' => true]);
+
+    // Commit transaction
+    $conn->commit();
+    
+    echo json_encode(['success' => true, 'appointment_id' => $appointmentId]);
 } catch (Exception $e) {
+    // Rollback transaction on error
+    if ($conn->inTransaction()) {
+        $conn->rollBack();
+    }
+    
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
+
 $conn = null;
 ?>

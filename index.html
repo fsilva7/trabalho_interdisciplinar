@@ -16,21 +16,39 @@
             <p class="hero-subtitle">Gerencie seus compromissos de forma simples e eficiente</p>
         </div>
         
-        <div class="landing-buttons">
-            <a href="agendamentos.html" class="landing-btn schedule-btn">
-                <div class="btn-content">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Fazer Agendamento</span>
-                    <small>Agende seu horário aqui</small>
-                </div>
-                <div class="btn-hover-effect"></div>
-            </a>
-            
-            <a href="login.html" class="landing-btn admin-btn">
+        <div class="sectors-container">
+            <h2 class="sectors-title">Escolha seu Setor</h2>
+            <div class="landing-buttons">                <a href="agendamentos.html?setor=barbearia" class="landing-btn schedule-btn barbershop-btn">
+                    <div class="btn-content">
+                        <i class="fas fa-cut"></i>
+                        <span>Barbearia</span>
+                        <small>Especializado em público masculino</small>
+                        <div class="service-features">
+                            <span class="feature"><i class="fas fa-cut"></i> Cortes masculinos</span>
+                            <span class="feature"><i class="fas fa-user-alt"></i> Design de barba</span>
+                            <span class="feature"><i class="fas fa-star"></i> Combos especiais</span>
+                        </div>
+                    </div>
+                    <div class="btn-hover-effect"></div>
+                </a>
+                
+                <a href="agendamentos.html?setor=salao" class="landing-btn schedule-btn salon-btn">
+                    <div class="btn-content">
+                        <i class="fas fa-spa"></i>
+                        <span>Salão de Beleza</span>
+                        <small>Beleza e bem-estar</small>
+                        <div class="service-features">
+                            <span class="feature"><i class="fas fa-paint-brush"></i> Cortes e coloração</span>
+                            <span class="feature"><i class="fas fa-magic"></i> Tratamentos capilares</span>
+                            <span class="feature"><i class="fas fa-gem"></i> Manicure e pedicure</span>
+                        </div>
+                    </div>
+                    <div class="btn-hover-effect"></div>
+                </a></div>            <a href="login.html" class="landing-btn admin-btn">
                 <div class="btn-content">
                     <i class="fas fa-user-shield"></i>
                     <span>Área Administrativa</span>
-                    <small>Gerenciar agendamentos</small>
+                    <small>Faça login ou cadastre-se</small>
                 </div>
                 <div class="btn-hover-effect"></div>
             </a>

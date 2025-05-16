@@ -3,7 +3,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const telefoneInput = document.getElementById('telefone');
     const dataInput = document.getElementById('data');
     const horaInput = document.getElementById('hora');
-    const confirmationMessage = document.getElementById('confirmationMessage');    // Inicializar Flatpickr para seleção de data
+    const selectedServicesInput = document.getElementById('selectedServices');
+    const totalPriceInput = document.getElementById('totalPrice');
+    const totalDurationInput = document.getElementById('totalDuration');
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const summaryContent = document.querySelector('.summary-content');
+    
+    // Initialize service selector based on URL parameter
+    const params = new URLSearchParams(window.location.search);
+    const sector = params.get('setor');
+    const servicesSection = document.querySelector('.services-section');
+      if (sector === 'barbearia') {
+        document.body.classList.add('barbershop-theme');
+        servicesSection.appendChild(createServiceSelector(SERVICE_TYPES.BARBERSHOP));
+    } else if (sector === 'salao') {
+        document.body.classList.add('salon-theme');
+        servicesSection.appendChild(createServiceSelector(SERVICE_TYPES.SALON));
+    }
+
+    // Function to update booking summary
+    function updateBookingSummary(services, price, duration) {
+        const summary = [];
+        services.forEach(service => {
+            summary.push(`
+                <div class="summary-item">
+                    <span class="service-name">${service.name}</span>
+                    <span class="service-price">R$ ${service.price.toFixed(2)}</span>
+                </div>
+            `);
+        });
+
+        summaryContent.innerHTML = `
+            <div class="summary-services">
+                ${summary.join('')}
+            </div>
+            <div class="summary-total">
+                <div class="total-duration">
+                    <i class="fas fa-clock"></i> Duração Total: ${duration} min
+                </div>
+                <div class="total-price">
+                    <i class="fas fa-tag"></i> Total: R$ ${price.toFixed(2)}
+                </div>
+            </div>
+        `;
+
+        selectedServicesInput.value = JSON.stringify(services);
+        totalPriceInput.value = price;
+        totalDurationInput.value = duration;
+    }
+
+    // Inicializar Flatpickr para seleção de data
     flatpickr(dataInput, {
         dateFormat: "Y-m-d",
         minDate: "today",
@@ -299,5 +348,116 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataHoje = hoje.toISOString().slice(0, 10);
         dataInput.value = dataHoje;
         generateTimeSlots(dataHoje);
+    }    // Os serviços foram movidos para services.js
+    const servicosPorSetor = window.serviceCategories;
+
+    // Initialize selected services
+    let selectedServices = new Set();
+    let totalPrice = 0;
+    let totalDuration = 0;
+
+    // Create service selection interface
+    const setor = params.get('setor') || 'barbearia';
+    const servicesContainer = document.createElement('div');
+    servicesContainer.className = 'services-container';
+
+    Object.entries(servicosPorSetor[setor]).forEach(([categoria, servicos]) => {
+        const categoryContainer = document.createElement('div');
+        categoryContainer.className = 'service-category';
+        categoryContainer.innerHTML = `<h3>${categoria.charAt(0).toUpperCase() + categoria.slice(1)}</h3>`;
+
+        const servicesList = document.createElement('div');
+        servicesList.className = 'services-list';
+
+        servicos.forEach(servico => {
+            const serviceCard = document.createElement('div');
+            serviceCard.className = 'service-card';
+            serviceCard.innerHTML = `
+                <div class="service-info">
+                    <h4>${servico.nome}</h4>
+                    <p class="price">R$ ${servico.preco.toFixed(2)}</p>
+                    <p class="duration"><i class="fas fa-clock"></i> ${servico.duracao} min</p>
+                </div>
+                <button class="select-service" data-id="${servico.id}">
+                    <i class="fas fa-plus"></i>
+                </button>
+            `;
+
+            serviceCard.querySelector('button').addEventListener('click', () => {
+                const button = serviceCard.querySelector('button');
+                if (selectedServices.has(servico.id)) {
+                    selectedServices.delete(servico.id);
+                    totalPrice -= servico.preco;
+                    totalDuration -= servico.duracao;
+                    button.innerHTML = '<i class="fas fa-plus"></i>';
+                    serviceCard.classList.remove('selected');
+                } else {
+                    selectedServices.add(servico.id);
+                    totalPrice += servico.preco;
+                    totalDuration += servico.duracao;
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    serviceCard.classList.add('selected');
+                }
+                updateBookingSummary();
+            });
+
+            servicesList.appendChild(serviceCard);
+        });
+
+        categoryContainer.appendChild(servicesList);
+        servicesContainer.appendChild(categoryContainer);
+    });
+
+    document.querySelector('.services-section').appendChild(servicesContainer);
+
+    function updateBookingSummary() {
+        const summary = [];
+        let services = [];
+
+        selectedServices.forEach(id => {
+            Object.values(servicosPorSetor[setor]).forEach(categoria => {
+                const servico = categoria.find(s => s.id === id);
+                if (servico) {
+                    services.push({
+                        id: servico.id,
+                        name: servico.nome,
+                        price: servico.preco,
+                        duration: servico.duracao
+                    });
+                }
+            });
+        });
+
+        document.getElementById('selectedServices').value = JSON.stringify(services);
+        document.getElementById('totalPrice').value = totalPrice;
+        document.getElementById('totalDuration').value = totalDuration;
+
+        const summaryContent = document.querySelector('.summary-content');
+        if (services.length === 0) {
+            summaryContent.innerHTML = '<p>Nenhum serviço selecionado</p>';
+            return;
+        }
+
+        summaryContent.innerHTML = `
+            <div class="selected-services">
+                ${services.map(s => `
+                    <div class="summary-item">
+                        <span class="service-name">${s.name}</span>
+                        <span class="service-price">R$ ${s.price.toFixed(2)}</span>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="summary-total">
+                <div class="total-duration">
+                    <i class="fas fa-clock"></i> Duração Total: ${totalDuration} min
+                </div>
+                <div class="total-price">
+                    <i class="fas fa-tag"></i> Total: R$ ${totalPrice.toFixed(2)}
+                </div>
+            </div>
+        `;
     }
+
+    // Ajustar slots disponíveis com base na duração total dos serviços selecionados
+    const slotDuration = setor === 'barbearia' ? 30 : 60;
 });

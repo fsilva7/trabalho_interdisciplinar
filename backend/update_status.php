@@ -13,8 +13,9 @@ try {
     }
     $id = $data['id'];
     $status = $data['status'];
-    $stmt = $conn->prepare('UPDATE agendamentos SET status = ? WHERE id = ?');
-    $stmt->execute([$status, $id]);
+    $observacoes = isset($data['observacoes']) ? $data['observacoes'] : null;
+    $stmt = $conn->prepare('UPDATE appointments SET status = ?, observacoes = ?, ultima_atualizacao = NOW() WHERE id = ?');
+    $stmt->execute([$status, $observacoes, $id]);
     echo json_encode(['success' => true]);
 } catch (Exception $e) {
     http_response_code(500);

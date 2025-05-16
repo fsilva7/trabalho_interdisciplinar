@@ -6,8 +6,8 @@
     <title>Sistema de Agendamentos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css" />    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="services.css" />
 </head>
 <body class="scheduling-page">
     <div class="scheduling-wrapper"><nav>
@@ -19,19 +19,23 @@
         <header>
             <h1><i class="fas fa-calendar-alt"></i> Sistema de Agendamentos</h1>
             <p class="subtitle">Agende seu horário de forma rápida e fácil</p>
-        </header>
+        </header>        <div class="form-container">
+            <div class="services-section">
+                <!-- Service selector will be injected here by JavaScript -->
+            </div>
 
-        <div class="form-container">
             <form id="appointmentForm">
                 <div class="form-group">
                     <i class="fas fa-user"></i>
                     <input type="text" id="nome" placeholder="Seu nome" required />
-                </div>                <div class="form-group">
+                </div>
+                <div class="form-group">
                     <i class="fas fa-phone"></i>
                     <input type="tel" id="telefone" placeholder="(00) 00000-0000" required 
                            pattern="\([0-9]{2}\) [0-9]{5}-[0-9]{4}"
                            title="Digite um telefone no formato (00) 00000-0000" />
-                </div>                <div class="form-group">
+                </div>
+                <div class="form-group">
                     <i class="fas fa-calendar"></i>
                     <input type="text" id="data" placeholder="Selecione a data" required readonly />
                 </div>
@@ -46,6 +50,16 @@
                             <!-- Opções preenchidas via JavaScript -->
                         </div>
                         <input type="hidden" id="hora" name="hora" required />
+                        <input type="hidden" id="selectedServices" name="selectedServices" required />
+                        <input type="hidden" id="totalPrice" name="totalPrice" required />
+                        <input type="hidden" id="totalDuration" name="totalDuration" required />
+                    </div>
+                </div>
+
+                <div class="booking-summary">
+                    <h3><i class="fas fa-receipt"></i> Resumo do Agendamento</h3>
+                    <div class="summary-content">
+                        <!-- Summary will be populated by JavaScript -->
                     </div>
                 </div>
 
@@ -66,7 +80,10 @@
 
     <footer>
         <p>&copy; 2025 Sistema de Agendamentos. Todos os direitos reservados.</p>
-    </footer>    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    </footer>    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>    <script src="js/services.js"></script>
+    <script src="js/selector.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/selector.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
