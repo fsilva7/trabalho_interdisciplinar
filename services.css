@@ -8,14 +8,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.barbershop-theme .services-container {
-    border-top: 4px solid #2c3e50;
-}
-
-.salon-theme .services-container {
-    border-top: 4px solid #ff758c;
-}
-
 .service-category {
     margin-bottom: 2rem;
 }
@@ -26,6 +18,9 @@
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .services-list {
@@ -34,194 +29,107 @@
     gap: 1rem;
 }
 
-.service-category {
-    margin-bottom: 2rem;
-}
-
-.service-category h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.service-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
 .service-item {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
+    position: relative;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
+    padding: 1rem;
+    transition: all 0.2s ease-out;
+    background: #fff;
+    cursor: pointer;
 }
 
 .service-item:hover {
-    background: rgba(255, 255, 255, 0.2);
+    border-color: #2563eb;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
 }
 
-.service-item input[type="checkbox"] {
-    margin-right: 1rem;
-    width: 20px;
-    height: 20px;
+.service-item input[type="checkbox"],
+.service-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 .service-item label {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    display: block;
     cursor: pointer;
-}
-
-.service-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.service-price {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.service-duration {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.service-totals {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.service-card {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-    border: 1px solid #eee;
-}
-
-.service-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.service-card.selected {
-    background: #e8f4ff;
-    border-color: #0066cc;
-}
-
-.barbershop-theme .service-card.selected {
-    background: #2c3e50;
-    border-color: #34495e;
-    color: white;
-}
-
-.salon-theme .service-card.selected {
-    background: #ff758c;
-    border-color: #ff7eb3;
-    color: white;
+    user-select: none;
 }
 
 .service-info {
-    flex: 1;
-}
-
-.service-info h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-    color: #333;
-}
-
-.service-card.selected .service-info h4 {
-    color: white;
-}
-
-.service-info .price {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #0066cc;
-    margin: 0.5rem 0;
-}
-
-.service-card.selected .service-info .price {
-    color: #fff;
-}
-
-.service-info .duration {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 0;
-}
-
-.service-card.selected .service-info .duration {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.select-service {
-    background: transparent;
-    border: 2px solid #0066cc;
-    color: #0066cc;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
     display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.service-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.service-details {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    gap: 0.5rem;
 }
 
-.service-card.selected .select-service {
-    background: #fff;
-    border-color: #fff;
-    color: #0066cc;
+/* Estado selecionado */
+.service-item.selected {
+    border-color: #2563eb;
+    background-color: #f0f7ff;
 }
 
-.select-service:hover {
-    background: #0066cc;
-    color: white;
+.service-item.selected .service-name {
+    color: #2563eb;
 }
 
 /* Estilos específicos para o salão */
-.salon-theme .service-category h3 {
-    color: #ff758c;
-    border-bottom: 2px solid #ff758c;
-}
-
-.salon-theme .service-item {
-    border-left: 4px solid #ff758c;
+.salon-theme .service-item:hover {
+    border-color: #ec4899;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.1);
 }
 
 .salon-theme .service-item.selected {
-    background-color: #fff0f3;
-    border: 1px solid #ff758c;
+    border-color: #ec4899;
+    background-color: #fdf2f8;
 }
 
-.salon-theme .service-item:hover {
-    border-color: #ff758c;
-    box-shadow: 0 2px 8px rgba(255, 117, 140, 0.2);
+.salon-theme .service-item.selected .service-name {
+    color: #ec4899;
 }
 
-/* Ícones específicos para categorias do salão */
-.salon-theme .category-title i {
-    background: linear-gradient(45deg, #ff758c, #ff7eb3);    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+.salon-theme .service-category h3 {
+    color: #ec4899;
+}
+
+/* Indicador de seleção */
+.service-item::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    transition: all 0.2s ease-out;
+}
+
+.salon-theme .service-item.selected::after {
+    background-color: #ec4899;
+    border-color: #ec4899;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 /* Booking Summary Styles */

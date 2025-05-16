@@ -11,7 +11,7 @@
 </head>
 <body class="scheduling-page">
     <div class="scheduling-wrapper"><nav>
-            <a href="index.html" class="back-link">
+            <a href="index.html" class="back-button">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
         </nav>
@@ -22,9 +22,7 @@
         </header>        <div class="form-container">
             <div class="services-section">
                 <!-- Service selector will be injected here by JavaScript -->
-            </div>
-
-            <form id="appointmentForm">
+            </div>            <form id="appointmentForm" onsubmit="return false;">
                 <div class="form-group">
                     <i class="fas fa-user"></i>
                     <input type="text" id="nome" placeholder="Seu nome" required />
@@ -61,9 +59,7 @@
                     <div class="summary-content">
                         <!-- Summary will be populated by JavaScript -->
                     </div>
-                </div>
-
-                <button type="submit">
+                </div>                <button type="submit" class="submit-button">
                     <i class="fas fa-calendar-plus"></i> Agendar Horário
                 </button>
             </form>
@@ -76,14 +72,14 @@
         <div class="appointments-list" id="appointmentsList">
             <!-- Lista de agendamentos será preenchida via JavaScript -->
         </div>
-    </div>
-
-    <footer>
+    </div>    <footer>
         <p>&copy; 2025 Sistema de Agendamentos. Todos os direitos reservados.</p>
-    </footer>    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>    <script src="js/services.js"></script>
-    <script src="js/selector.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <script src="js/services.js"></script>
     <script src="js/selector.js"></script>
+    <script src="js/time-slots.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

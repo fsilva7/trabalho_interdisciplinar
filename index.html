@@ -2,12 +2,16 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>Sistema de Agendamentos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
 </head>
-<body class="landing-page">    <div class="container landing-container">
+<body class="landing-page">
+    <div class="container landing-container">
         <div class="hero-section">
             <h1 class="animate-title">
                 <i class="fas fa-calendar-check"></i>
@@ -15,43 +19,67 @@
             </h1>
             <p class="hero-subtitle">Gerencie seus compromissos de forma simples e eficiente</p>
         </div>
-        
+
         <div class="sectors-container">
             <h2 class="sectors-title">Escolha seu Setor</h2>
-            <div class="landing-buttons">                <a href="agendamentos.html?setor=barbearia" class="landing-btn schedule-btn barbershop-btn">
-                    <div class="btn-content">
-                        <i class="fas fa-cut"></i>
-                        <span>Barbearia</span>
-                        <small>Especializado em público masculino</small>
-                        <div class="service-features">
-                            <span class="feature"><i class="fas fa-cut"></i> Cortes masculinos</span>
-                            <span class="feature"><i class="fas fa-user-alt"></i> Design de barba</span>
-                            <span class="feature"><i class="fas fa-star"></i> Combos especiais</span>
-                        </div>
+            
+            <div class="sectors-grid">
+                <!-- Área de Serviços -->
+                <div class="sectors-services">
+                    <div class="landing-buttons">
+                        <a href="agendamentos.html?setor=barbearia" 
+                           class="landing-btn schedule-btn barbershop-btn"
+                           role="button"
+                           aria-label="Agendar na Barbearia">
+                            <div class="btn-content">
+                                <i class="fas fa-cut" aria-hidden="true"></i>
+                                <span>Barbearia</span>
+                                <small>Especializado em público masculino</small>
+                                <div class="service-features">
+                                    <span class="feature"><i class="fas fa-cut" aria-hidden="true"></i> Cortes masculinos</span>
+                                    <span class="feature"><i class="fas fa-user-alt" aria-hidden="true"></i> Design de barba</span>
+                                    <span class="feature"><i class="fas fa-star" aria-hidden="true"></i> Combos especiais</span>
+                                </div>
+                            </div>
+                            <div class="btn-hover-effect" aria-hidden="true"></div>
+                        </a>
+                        
+                        <a href="agendamentos.html?setor=salao" 
+                           class="landing-btn schedule-btn salon-btn"
+                           role="button"
+                           aria-label="Agendar no Salão de Beleza">
+                            <div class="btn-content">
+                                <i class="fas fa-spa" aria-hidden="true"></i>
+                                <span>Salão de Beleza</span>
+                                <small>Beleza e bem-estar</small>
+                                <div class="service-features">
+                                    <span class="feature"><i class="fas fa-paint-brush" aria-hidden="true"></i> Cortes e coloração</span>
+                                    <span class="feature"><i class="fas fa-magic" aria-hidden="true"></i> Tratamentos capilares</span>
+                                    <span class="feature"><i class="fas fa-gem" aria-hidden="true"></i> Manicure e pedicure</span>
+                                </div>
+                            </div>
+                            <div class="btn-hover-effect" aria-hidden="true"></div>
+                        </a>
                     </div>
-                    <div class="btn-hover-effect"></div>
-                </a>
-                
-                <a href="agendamentos.html?setor=salao" class="landing-btn schedule-btn salon-btn">
-                    <div class="btn-content">
-                        <i class="fas fa-spa"></i>
-                        <span>Salão de Beleza</span>
-                        <small>Beleza e bem-estar</small>
-                        <div class="service-features">
-                            <span class="feature"><i class="fas fa-paint-brush"></i> Cortes e coloração</span>
-                            <span class="feature"><i class="fas fa-magic"></i> Tratamentos capilares</span>
-                            <span class="feature"><i class="fas fa-gem"></i> Manicure e pedicure</span>
-                        </div>
-                    </div>
-                    <div class="btn-hover-effect"></div>
-                </a></div>            <a href="login.html" class="landing-btn admin-btn">
-                <div class="btn-content">
-                    <i class="fas fa-user-shield"></i>
-                    <span>Área Administrativa</span>
-                    <small>Faça login ou cadastre-se</small>
                 </div>
-                <div class="btn-hover-effect"></div>
-            </a>
+
+                <!-- Área Administrativa -->
+                <div class="admin-section">
+                    <a href="login.html" class="landing-btn admin-btn">
+                        <div class="btn-content">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Área Administrativa</span>
+                            <small>Faça login ou cadastre-se</small>
+                            <div class="admin-features">
+                                <span class="feature"><i class="fas fa-calendar-alt"></i> Gestão de Agendamentos</span>
+                                <span class="feature"><i class="fas fa-chart-line"></i> Relatórios e Estatísticas</span>
+                                <span class="feature"><i class="fas fa-cog"></i> Configurações do Sistema</span>
+                            </div>
+                        </div>
+                        <div class="btn-hover-effect"></div>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div class="features-section">
@@ -75,16 +103,80 @@
 
     <footer class="landing-footer">
         <p>&copy; 2025 Sistema de Agendamentos | Desenvolvido com <i class="fas fa-heart"></i></p>
-    </footer>
-    <script>
-        document.querySelectorAll('.landing-btn').forEach(btn => {
-            btn.addEventListener('mousemove', e => {
-                const rect = btn.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / btn.clientWidth) * 100;
-                const y = ((e.clientY - rect.top) / btn.clientHeight) * 100;
-                btn.querySelector('.btn-hover-effect').style.setProperty('--x', x + '%');
-                btn.querySelector('.btn-hover-effect').style.setProperty('--y', y + '%');
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.landing-btn');
+            let lastTouchTime = 0;
+            
+            // Gerenciamento de estados dos botões
+            buttons.forEach(btn => {
+                // Mouse Events
+                if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                    const effect = btn.querySelector('.btn-hover-effect');
+                    
+                    btn.addEventListener('mousemove', e => {
+                        const rect = btn.getBoundingClientRect();
+                        const x = ((e.clientX - rect.left) / btn.clientWidth) * 100;
+                        const y = ((e.clientY - rect.top) / btn.clientHeight) * 100;
+                        effect.style.setProperty('--x', x + '%');
+                        effect.style.setProperty('--y', y + '%');
+                    });
+
+                    btn.addEventListener('mouseenter', () => {
+                        effect.style.opacity = '1';
+                    });
+
+                    btn.addEventListener('mouseleave', () => {
+                        effect.style.opacity = '0';
+                    });
+                }
+
+                // Touch Events
+                btn.addEventListener('touchstart', function(e) {
+                    lastTouchTime = Date.now();
+                    this.classList.add('active');
+                }, { passive: true });
+
+                btn.addEventListener('touchend', function(e) {
+                    const touchDuration = Date.now() - lastTouchTime;
+                    
+                    // Previne cliques acidentais muito rápidos
+                    if (touchDuration < 50) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    this.classList.remove('active');
+                    
+                    // Adiciona um pequeno atraso antes de navegar
+                    setTimeout(() => {
+                        if (this.hasAttribute('href')) {
+                            window.location.href = this.getAttribute('href');
+                        }
+                    }, 50);
+                }, { passive: false });
+
+                // Limpa estado ativo se o toque for cancelado
+                btn.addEventListener('touchcancel', function() {
+                    this.classList.remove('active');
+                });
             });
+
+            // Previne comportamento de "fantasma" em dispositivos touch
+            document.addEventListener('touchmove', function(e) {
+                const activeBtn = document.querySelector('.landing-btn.active');
+                if (activeBtn) {
+                    const touch = e.touches[0];
+                    const btnRect = activeBtn.getBoundingClientRect();
+                    
+                    if (touch.clientX < btnRect.left || 
+                        touch.clientX > btnRect.right || 
+                        touch.clientY < btnRect.top || 
+                        touch.clientY > btnRect.bottom) {
+                        activeBtn.classList.remove('active');
+                    }
+                }
+            }, { passive: true });
         });
     </script>
 </body>

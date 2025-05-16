@@ -9,16 +9,6 @@ const createServiceSelector = (sectorType) => {
         return container;
     }
     
-    // Add appropriate title for each sector
-    const sectorTitle = document.createElement('h2');
-    sectorTitle.className = 'sector-title';
-    if (sectorType === SERVICE_TYPES.BARBERSHOP) {
-        sectorTitle.innerHTML = '<i class="fas fa-cut"></i> Serviços de Barbearia';
-    } else if (sectorType === SERVICE_TYPES.SALON) {
-        sectorTitle.innerHTML = '<i class="fas fa-spa"></i> Serviços de Beleza';
-    }
-    container.appendChild(sectorTitle);
-
     // Estado local para controlar seleções e totais
     const state = {
         totalPrice: 0,
@@ -26,84 +16,95 @@ const createServiceSelector = (sectorType) => {
         selectedServices: new Set()
     };
 
-    // Create sections for each category
+    // Função para atualizar o estado visual do item
+    const updateItemState = (serviceItem, input, isSelected) => {
+        if (isSelected) {
+            serviceItem.classList.add('selected');
+        } else {
+            serviceItem.classList.remove('selected');
+            input.checked = false;
+        }
+    };
+
+    // Função para gerenciar a seleção de serviços
+    const handleServiceSelection = (input, service, category, serviceItem) => {
+        const isExclusive = category === 'Combos' || EXCLUSIVE_CATEGORIES.includes(category);
+        
+        if (input.checked) {
+            if (ServiceUtils.checkServiceCompatibility(state.selectedServices, service, category)) {
+                if (isExclusive) {
+                    // Limpar outros serviços da mesma categoria
+                    const currentServices = Array.from(state.selectedServices);
+                    currentServices.forEach(id => {
+                        const existingService = ServiceUtils.findServiceById(id);
+                        if (existingService) {
+                            const existingCategory = ServiceUtils.getServiceCategory(id);
+                            if (existingCategory === category || 
+                                (category === 'Combos' && !id.includes('combo'))) {
+                                const currentItem = document.querySelector(`[data-service-id="${id}"]`);
+                                const currentInput = document.getElementById(id);
+                                if (currentInput && currentItem) {
+                                    state.selectedServices.delete(id);
+                                    state.totalPrice -= existingService.price;
+                                    state.totalDuration -= existingService.duration;
+                                    updateItemState(currentItem, currentInput, false);
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Adicionar novo serviço
+                state.selectedServices.add(service.id);
+                state.totalPrice += service.price;
+                state.totalDuration += service.duration;
+                updateItemState(serviceItem, input, true);
+            } else {
+                input.checked = false;
+                ServiceUtils.showError('Este serviço não pode ser combinado com os já selecionados', container);
+            }
+        } else {
+            // Remover serviço
+            state.selectedServices.delete(service.id);
+            state.totalPrice -= service.price;
+            state.totalDuration -= service.duration;
+            updateItemState(serviceItem, input, false);
+        }
+        
+        // Atualizar resumo do agendamento
+        updateBookingSummary(
+            Array.from(state.selectedServices),
+            state.totalPrice,
+            state.totalDuration
+        );
+    };
+
+    // Criar seções para cada categoria
     Object.entries(services).forEach(([category, items]) => {
         const section = document.createElement('div');
         section.className = 'service-category';
         
         const title = document.createElement('h3');
-        title.className = 'category-title';
-        title.innerHTML = `<i class="${ServiceUtils.getCategoryIcon(category)}"></i> ${category}`;
+        const icon = ServiceUtils.getCategoryIcon(category);
+        title.innerHTML = `<i class="${icon}"></i> ${category}`;
         section.appendChild(title);
 
         const serviceList = document.createElement('div');
         serviceList.className = 'service-list';
 
-        // Create service items
+        // Criar itens de serviço
         items.forEach(service => {
             const serviceItem = document.createElement('div');
             serviceItem.className = 'service-item';
+            serviceItem.dataset.serviceId = service.id;
             
-            // Determinar se o serviço é exclusivo (apenas um por categoria)
             const isExclusive = category === 'Combos' || EXCLUSIVE_CATEGORIES.includes(category);
-
+            
             const input = document.createElement('input');
             input.type = isExclusive ? 'radio' : 'checkbox';
             input.id = service.id;
             input.name = isExclusive ? `category-${category.toLowerCase().replace(/\s+/g, '-')}` : service.id;
-            
-            // Handle service selection
-            input.addEventListener('change', () => {
-                if (input.checked) {
-                    if (ServiceUtils.checkServiceCompatibility(state.selectedServices, service, category)) {
-                        if (isExclusive) {
-                            // Limpar outros serviços da mesma categoria
-                            const currentServices = Array.from(state.selectedServices);
-                            currentServices.forEach(id => {
-                                const existingService = ServiceUtils.findServiceById(id);
-                                if (existingService) {
-                                    const existingCategory = ServiceUtils.getServiceCategory(id);
-                                    if (existingCategory === category || 
-                                        (category === 'Combos' && !id.includes('combo'))) {
-                                        const checkbox = document.getElementById(id);
-                                        if (checkbox) {
-                                            checkbox.checked = false;
-                                            state.selectedServices.delete(id);
-                                            state.totalPrice -= existingService.price;
-                                            state.totalDuration -= existingService.duration;
-                                            checkbox.closest('.service-item').classList.remove('selected');
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        
-                        // Adicionar novo serviço
-                        state.selectedServices.add(service.id);
-                        state.totalPrice += service.price;
-                        state.totalDuration += service.duration;
-                        serviceItem.classList.add('selected');
-                    } else {
-                        input.checked = false;
-                        ServiceUtils.showError('Este serviço não pode ser combinado com os já selecionados', container);
-                    }
-                } else {
-                    // Remover serviço
-                    state.selectedServices.delete(service.id);
-                    state.totalPrice -= service.price;
-                    state.totalDuration -= service.duration;
-                    serviceItem.classList.remove('selected');
-                }
-                
-                // Atualizar resumo do agendamento
-                updateBookingSummary(
-                    Array.from(state.selectedServices),
-                    state.totalPrice,
-                    state.totalDuration
-                );
-            });
 
-            // Create service label
             const label = document.createElement('label');
             label.htmlFor = service.id;
             label.innerHTML = `
@@ -120,27 +121,27 @@ const createServiceSelector = (sectorType) => {
                 </div>
             `;
 
-            // Append elements
+            // Adicionar event listeners
+            input.addEventListener('change', () => {
+                handleServiceSelection(input, service, category, serviceItem);
+            });
+
+            // Permitir clique em todo o item
+            serviceItem.addEventListener('click', (e) => {
+                if (e.target !== input) {
+                    input.checked = !input.checked;
+                    handleServiceSelection(input, service, category, serviceItem);
+                }
+            });
+
             serviceItem.appendChild(input);
             serviceItem.appendChild(label);
             serviceList.appendChild(serviceItem);
         });
 
-        // Append to section
         section.appendChild(serviceList);
         container.appendChild(section);
     });
-
-    // Create booking summary area
-    const summaryDiv = document.createElement('div');
-    summaryDiv.className = 'booking-summary';
-    summaryDiv.innerHTML = `
-        <h3><i class="fas fa-receipt"></i> Resumo do Agendamento</h3>
-        <div class="summary-content">
-            <p class="empty-selection">Nenhum serviço selecionado</p>
-        </div>
-    `;
-    container.appendChild(summaryDiv);
 
     return container;
 };
@@ -157,19 +158,17 @@ function updateBookingSummary(selectedIds, totalPrice, totalDuration) {
 
     const selectedServices = selectedIds
         .map(id => ServiceUtils.findServiceById(id))
-        .filter(Boolean);
-
-    summaryContent.innerHTML = `
+        .filter(Boolean);    summaryContent.innerHTML = `
         <div class="selected-services">
             ${selectedServices.map(service => `
                 <div class="summary-item">
-                    <span class="service-name">${service.nome}</span>
+                    <span class="service-name">${service.name}</span>
                     <div class="service-details">
                         <span class="service-duration">
-                            <i class="fas fa-clock"></i> ${service.duracao} min
+                            <i class="fas fa-clock"></i> ${service.duration} min
                         </span>
                         <span class="service-price">
-                            <i class="fas fa-tag"></i> R$ ${service.preco.toFixed(2)}
+                            <i class="fas fa-tag"></i> R$ ${service.price.toFixed(2)}
                         </span>
                     </div>
                 </div>
@@ -185,15 +184,10 @@ function updateBookingSummary(selectedIds, totalPrice, totalDuration) {
         </div>
     `;
 
-    // Update hidden form fields
-    document.getElementById('selectedServices').value = JSON.stringify(
-        selectedServices.map(s => ({ 
-            id: s.id, 
-            name: s.nome, 
-            price: s.preco, 
-            duration: s.duracao 
-        }))
-    );
+    // Update hidden form fields    document.getElementById('selectedServices').value = JSON.stringify(selectedServices);
     document.getElementById('totalPrice').value = totalPrice;
     document.getElementById('totalDuration').value = totalDuration;
 }
+
+// Exportar para uso global
+window.createServiceSelector = createServiceSelector;
