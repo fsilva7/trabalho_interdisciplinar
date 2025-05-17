@@ -10,47 +10,503 @@
 </head>
 <body class="admin-page">
     <div class="admin-panel">
-        <nav>
-            <a href="index.html" class="back-link">
-                <i class="fas fa-home"></i> Voltar para Início
-            </a>
-            <a href="admin_agendamentos.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar para Agendamentos</a>
-            <a href="login.html" class="back-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
-        </nav>
-        <h2><i class="fas fa-user-shield"></i> Painel Administrativo</h2>
-        <div class="admin-controls">
-            <div class="filter-section">
-                <select id="statusFilter">
-                    <option value="todos">Todos os Status</option>
-                    <option value="pendente">Pendentes</option>
-                    <option value="confirmado">Confirmados</option>
-                    <option value="cancelado">Cancelados</option>
-                </select>
-                <input type="date" id="dateFilter" />
-                <button id="refreshButton" class="admin-action-btn">
-                    <i class="fas fa-sync"></i> Atualizar
-                </button>
+        <nav class="admin-navbar">
+            <div class="admin-navbar-left">
+                <a href="index.html" class="back-link"><i class="fas fa-home"></i> Início</a>
+                <span class="admin-title"><i class="fas fa-user-shield"></i> Painel Administrativo</span>
             </div>
-        </div>
-        <div class="appointments-table-container">
-            <table id="appointmentsTable" class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Telefone</th>
-                        <th>Data</th>
-                        <th>Hora</th>
-                        <th>Serviço</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="appointmentsTableBody">
-                    <!-- Preenchido via JavaScript -->
-                </tbody>
-            </table>
-        </div>
+            <div class="admin-navbar-right">
+                <a href="login.html" class="back-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+        </nav>
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <i class="fas fa-calendar-check"></i>
+                <div class="stat-value" id="totalAgendamentos">0</div>
+                <div class="stat-label">Total de Agendamentos</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-value" id="agendamentosHoje">0</div>
+                <div class="stat-label">Hoje</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-value" id="agendamentosConfirmados">0</div>
+                <div class="stat-label">Confirmados</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <div class="stat-value">R$ <span id="valorTotal">0</span></div>
+                <div class="stat-label">Valor Total</div>
+            </div>
+        </section>
+        <section class="admin-controls">
+            <div class="filters-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar por nome ou telefone...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="filter-group">
+                    <select id="statusFilter">
+                        <option value="">Todos os Status</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                    <input type="text" id="dateFilter" placeholder="Filtrar por data">
+                </div>
+                <button id="refreshButton" class="btn-primary"><i class="fas fa-sync"></i> Atualizar</button>
+            </div>
+        </section>
+        <section class="appointments-table-container">
+            <div class="responsive-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>Data</th>
+                            <th>Hora</th>
+                            <th>Serviços</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <tr>
+        <td>Maria Silva</td>
+        <td>(11) 91234-5678</td>
+        <td>16/05/2025</td>
+        <td>14:00</td>
+        <td>
+            <span class="service-badge">Corte de cabelo</span>
+            <span class="service-badge">Manicure</span>
+            <button class="show-more-services" onclick="openServicesModal(['Corte de cabelo','Manicure','Sobrancelha'])" style="display:inline-block">+1</button>
+        </td>
+        <td>R$ 80,00</td>
+        <td><span class="status-badge status-confirmado">Confirmado</span></td>
+    </tr>
+    <tr>
+        <td>João Souza</td>
+        <td>(11) 99876-5432</td>
+        <td>17/05/2025</td>
+        <td>10:30</td>
+        <td>
+            <span class="service-badge">Barba</span>
+        </td>
+        <td>R$ 35,00</td>
+        <td><span class="status-badge status-pendente">Pendente</span></td>
+    </tr>
+    <tr>
+        <td>Fernanda Lima</td>
+        <td>(11) 98765-4321</td>
+        <td>18/05/2025</td>
+        <td>09:00</td>
+        <td>
+            <span class="service-badge">Coloração</span>
+        </td>
+        <td>R$ 120,00</td>
+        <td><span class="status-badge status-cancelado">Cancelado</span></td>
+    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <div class="pagination" id="pagination"></div>
     </div>
+    <style>
+        .admin-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            padding: 1.2rem 2vw;
+            border-radius: 0 0 1rem 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            min-height: 64px;
+        }
+        .admin-navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .admin-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            white-space: nowrap;
+            /* Para alinhar à esquerda */
+            text-align: left;
+            margin-left: 0;
+        }
+        @media (max-width: 700px) {
+    .admin-title {
+        text-align: left;
+        margin-left: 0.53rem;
+    }
+}
+        .admin-navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        @media (min-width: 700px) {
+            .dashboard-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .stat-card {
+            background: var(--white);
+            padding: 1rem 0.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            min-width: 0;
+        }
+        .stat-card i {
+            font-size: 1.7rem;
+            color: var(--primary-color);
+            margin-bottom: 0.2rem;
+        }
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            word-break: break-all;
+        }
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+        .filters-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            align-items: stretch;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 600px) {
+            .filters-bar {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        .search-box {
+            position: relative;
+            flex: 1 1 180px;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 2.2rem 0.7rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .search-box i {
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            pointer-events: none;
+            font-size: 1.1rem;
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .filter-group select,
+        .filter-group input[type="text"] {
+            min-width: 120px;
+            font-size: 1rem;
+            padding: 0.7rem 0.8rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 120px;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        .appointments-table-container {
+            margin-bottom: 2rem;
+        }
+        .responsive-table-wrapper {
+            overflow-x: auto;
+            background: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        .admin-table th, .admin-table td {
+            padding: 0.7rem 0.5rem;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .admin-table th:nth-child(1),
+        .admin-table td:nth-child(1),
+        .admin-table th:nth-child(3),
+        .admin-table td:nth-child(3) {
+            text-align: center;
+        }
+        .admin-table td {
+            font-size: 0.98rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: var(--text-color);
+            vertical-align: middle;
+            white-space: normal;
+            word-break: break-word;
+            max-width: 160px;
+        }
+        .admin-table td:nth-child(3), /* Data */
+        .admin-table td:nth-child(4), /* Hora */
+        .admin-table td:nth-child(7)  /* Status */
+        {
+            white-space: nowrap;
+            word-break: normal;
+            max-width: unset;
+        }
+        @media (max-width: 900px) {
+            .admin-table td {
+                max-width: 110px;
+            }
+            .admin-table td:nth-child(3),
+            .admin-table td:nth-child(4),
+            .admin-table td:nth-child(7) {
+                max-width: unset;
+            }
+        }
+        @media (max-width: 700px) {
+            .admin-table td {
+                max-width: 80px;
+            }
+            .admin-table td:nth-child(3),
+            .admin-table td:nth-child(4),
+            .admin-table td:nth-child(7) {
+                max-width: unset;
+            }
+        }
+        .admin-table th {
+            background: #f3f6fa;
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .admin-table th i.fas.fa-sort {
+            display: none;
+        }
+        .admin-table tr {
+            transition: background 0.15s;
+        }
+        .admin-table tr:hover {
+            background: #f8fafc;
+        }
+        .admin-table .status-badge {
+            padding: 0.3em 0.8em;
+            border-radius: 1em;
+            font-size: 0.95em;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-pendente { background: #fff3e0; color: #f57c00; }
+        .status-confirmado { background: #e8f5e9; color: #2e7d32; }
+        .status-cancelado { background: #ffebee; color: #c62828; }
+        .status-concluido { display: none !important; }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: var(--white);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .pagination button.active {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+        @media (max-width: 900px) {
+            .admin-table {
+                min-width: unset;
+                font-size: 0.97rem;
+            }
+            .admin-table th, .admin-table td {
+                padding: 0.5rem 0.3rem;
+            }
+        }
+        @media (max-width: 700px) {
+            .responsive-table-wrapper {
+                overflow-x: auto;
+            }
+            .admin-table {
+                font-size: 0.95rem;
+            }
+            .admin-table th, .admin-table td {
+                padding: 0.4rem 0.2rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .admin-table th, .admin-table td {
+                padding: 0.3rem 0.1rem;
+                font-size: 0.93rem;
+            }
+            .admin-table {
+                font-size: 0.93rem;
+            }
+            .responsive-table-wrapper {
+                border-radius: 0.5rem;
+            }
+        }
+        .service-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 1em;
+            padding: 0.22em 0.9em;
+            font-size: 0.93em;
+            font-weight: 500;
+            margin: 0.1em 0.2em 0.1em 0;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(25, 118, 210, 0.06);
+            transition: background 0.2s;
+        }
+        .show-more-services {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: none;
+            border-radius: 1em;
+            padding: 0.22em 0.9em;
+            font-size: 0.93em;
+            font-weight: 500;
+            margin: 0.1em 0.2em 0.1em 0;
+            cursor: pointer;
+            display: inline-block;
+        }
+        /* Modal overlay */
+#servicesModalOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+#servicesModal {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    padding: 2rem 1.5rem 1.2rem 1.5rem;
+    min-width: 240px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: center;
+    position: relative;
+    animation: fadeInModal 0.2s;
+}
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+#servicesModal h3 {
+    margin-top: 0;
+    font-size: 1.15rem;
+    color: #1976d2;
+    margin-bottom: 1rem;
+}
+#servicesModal .service-badge {
+    margin: 0.2em 0.3em 0.2em 0;
+    font-size: 1em;
+}
+#closeServicesModal {
+    position: absolute;
+    top: 0.7rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+#closeServicesModal:hover {
+    color: #1976d2;
+}
+    </style>
+    <div id="servicesModalOverlay">
+    <div id="servicesModal">
+        <button id="closeServicesModal" onclick="closeServicesModal()">&times;</button>
+        <h3>Serviços do Agendamento</h3>
+        <div id="servicesModalList"></div>
+    </div>
+</div>
     <script src="admin.js"></script>
+    <script>
+function openServicesModal(services) {
+    var overlay = document.getElementById('servicesModalOverlay');
+    var list = document.getElementById('servicesModalList');
+    list.innerHTML = '';
+    services.forEach(function(service) {
+        var span = document.createElement('span');
+        span.className = 'service-badge';
+        span.textContent = service;
+        list.appendChild(span);
+    });
+    overlay.style.display = 'flex';
+}
+function closeServicesModal() {
+    document.getElementById('servicesModalOverlay').style.display = 'none';
+}
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeServicesModal();
+});
+</script>
 </body>
 </html>
