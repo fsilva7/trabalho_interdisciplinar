@@ -22,7 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const status = statusFilter.value;
         const date = dateFilter.value;
 
-        fetch('backend/list_appointments.php')
+        const params = new URLSearchParams();
+        if (status && status !== 'todos') {
+            params.append('status', status);
+        }
+        if (date) {
+            params.append('date', date);
+        }
+
+        fetch('backend/list_appointments.php?' + params.toString())
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,21 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(appointments => {
-                console.log('Agendamentos recebidos:', appointments);
-                tableBody.innerHTML = '';                // Filtrar agendamentos
-                let filteredAppointments = appointments;
-                if (status !== 'todos') {
-                    filteredAppointments = appointments.filter(app => 
-                        app.status.toLowerCase() === status.toLowerCase()
-                    );
-                }
-                if (date) {
-                    filteredAppointments = filteredAppointments.filter(app => 
-                        app.data === formatDate(date)
-                    );
-                }
-
-                if (filteredAppointments.length === 0) {
+                tableBody.innerHTML = '';
+                if (!Array.isArray(appointments) || appointments.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
                             <td colspan="7" class="no-appointments">
@@ -53,7 +48,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         </tr>
                     `;
                     return;
-                }                filteredAppointments.forEach((appointment, index) => {
+                }
+                // Ordena do mais recente para o mais antigo (data/hora decrescente)
+                appointments.sort((a, b) => {
+                    // data: dd/mm/yyyy
+                    const [da, ma, ya] = a.data.split('/');
+                    const [db, mb, yb] = b.data.split('/');
+                    const dateA = new Date(`${ya}-${ma}-${da}T${a.hora || '00:00'}`);
+                    const dateB = new Date(`${yb}-${mb}-${db}T${b.hora || '00:00'}`);
+                    return dateB - dateA;
+                });
+                // ...continua renderização...
+                let filtered = appointments;
+                if (status) {
+                    filtered = appointments.filter(app => app.status && app.status.toLowerCase() === status.toLowerCase());
+                }
+                filtered.forEach((appointment, index) => {
                     const tr = document.createElement('tr');
                     tr.style.setProperty('--row-index', index);
                     tr.innerHTML = `
@@ -61,38 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${appointment.telefone}</td>
                         <td>${appointment.data}</td>
                         <td>${appointment.hora}</td>
-                        <td>${appointment.servico}</td>
-                        <td class="status-cell status-${appointment.status.toLowerCase()}">
-                            <span class="status-indicator"></span>
-                            <select class="status-select" data-id="${appointment.id}">
-                                <option value="Pendente" ${appointment.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
-                                <option value="Confirmado" ${appointment.status === 'Confirmado' ? 'selected' : ''}>Confirmado</option>
-                                <option value="Cancelado" ${appointment.status === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn delete-btn" data-id="${appointment.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
+                        <td>${appointment.services ? appointment.services.split(',').map(s => `<span class='service-badge'>${s}</span>`).join(' ') : ''}</td>
+                        <td>R$ ${appointment.total_price || ''}</td>
+                        <td><span class="status-badge status-${appointment.status.toLowerCase()}">${appointment.status}</span></td>
                     `;
                     tableBody.appendChild(tr);
-
-                    // Adicionar event listener para mudança de status
-                    const statusSelect = tr.querySelector('.status-select');
-                    statusSelect.addEventListener('change', function(e) {
-                        updateStatus(appointment.id, e.target.value);
-                    });
-
-                    // Adicionar event listener para deletar
-                    const deleteBtn = tr.querySelector('.delete-btn');
-                    deleteBtn.addEventListener('click', function() {
-                        if (confirm('Tem certeza que deseja excluir este agendamento?')) {
-                            deleteAppointment(appointment.id);
-                        }
-                    });
                 });
             })
             .catch(error => {

@@ -58,6 +58,10 @@
                 </div>
                 <button id="refreshButton" class="btn-primary"><i class="fas fa-sync"></i> Atualizar</button>
             </div>
+            <div class="actions-bar" style="display:flex; gap:1rem; margin-top:1.5rem; justify-content:center;">
+        <button id="btnConfirmar" class="btn-primary" type="button"><i class="fas fa-check"></i> Confirmar Agendamento</button>
+        <button id="btnCancelar" class="btn-primary" style="background:#c62828;" type="button"><i class="fas fa-times"></i> Cancelar Agendamento</button>
+    </div>
         </section>
         <section class="appointments-table-container">
             <div class="responsive-table-wrapper">
@@ -479,6 +483,23 @@
 #closeServicesModal:hover {
     color: #1976d2;
 }
+.selected-row {
+    background: #e3f2fd !important;
+    outline: 2px solid #2563eb;
+}
+.actions-bar .btn-primary {
+    min-width: 180px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+.actions-bar .btn-primary:last-child {
+    background: #c62828;
+    color: #fff;
+}
+.actions-bar .btn-primary:last-child:hover {
+    background: #b71c1c;
+}
     </style>
     <div id="servicesModalOverlay">
     <div id="servicesModal">
@@ -507,6 +528,37 @@ function closeServicesModal() {
 window.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeServicesModal();
 });
-</script>
+
+// Seleção de linha e ações de confirmação/cancelamento
+const tableBody = document.getElementById('appointmentsTableBody');
+let selectedRow = null;
+
+if (tableBody) {
+    tableBody.addEventListener('click', function(e) {
+        let tr = e.target.closest('tr');
+        if (!tr) return;
+        if (selectedRow) selectedRow.classList.remove('selected-row');
+        selectedRow = tr;
+        tr.classList.add('selected-row');
+    });
+}
+
+document.getElementById('btnConfirmar').onclick = function() {
+    if (!selectedRow) { alert('Selecione um agendamento na tabela.'); return; }
+    const status = selectedRow.querySelector('.status-badge');
+    status.textContent = 'Confirmado';
+    status.className = 'status-badge status-confirmado';
+    // TODO: Chamar backend para atualizar status
+    alert('Agendamento confirmado! (Simulação)');
+};
+document.getElementById('btnCancelar').onclick = function() {
+    if (!selectedRow) { alert('Selecione um agendamento na tabela.'); return; }
+    const status = selectedRow.querySelector('.status-badge');
+    status.textContent = 'Cancelado';
+    status.className = 'status-badge status-cancelado';
+    // TODO: Chamar backend para atualizar status
+    alert('Agendamento cancelado! (Simulação)');
+};
+    </script>
 </body>
 </html>
