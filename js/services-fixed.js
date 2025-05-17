@@ -1,6 +1,3 @@
-// Namespace global para a aplicação
-window.SALON_APP = window.SALON_APP || {};
-
 // Constants
 window.SERVICE_TYPES = {
     BARBERSHOP: 'barbershop',
@@ -58,15 +55,12 @@ window.SERVICES = {
 
 window.EXCLUSIVE_CATEGORIES = ['Combos', 'Combos e Pacotes'];
 
-// Classe utilitária para gerenciamento de serviços
 window.ServiceUtils = class ServiceUtils {
     static getServicesBySector(sectorType) {
-        if (!sectorType) return null;
         return window.SERVICES[sectorType.toLowerCase()];
     }
 
     static findServiceById(id) {
-        if (!id) return null;
         for (const sectorServices of Object.values(window.SERVICES)) {
             for (const categoryServices of Object.values(sectorServices)) {
                 const service = categoryServices.find(s => s.id === id);
@@ -77,7 +71,6 @@ window.ServiceUtils = class ServiceUtils {
     }
 
     static getServiceCategory(id) {
-        if (!id) return null;
         for (const sectorServices of Object.values(window.SERVICES)) {
             for (const [category, services] of Object.entries(sectorServices)) {
                 if (services.some(s => s.id === id)) return category;
@@ -86,38 +79,8 @@ window.ServiceUtils = class ServiceUtils {
         return null;
     }
 
-    static checkServiceCompatibility(selectedServices, newService, category) {
-        // Se não tem categoria, permite a seleção
-        if (!category) return true;
-
-        // Se é um combo, só pode ser selecionado se não houver outros serviços
-        if (category === 'Combos' || category === 'Combos e Pacotes') {
-            return selectedServices.size === 0;
-        }
-
-        // Se já tem algum combo selecionado, não permite selecionar outros serviços
-        for (const serviceId of selectedServices) {
-            const serviceCategory = this.getServiceCategory(serviceId);
-            if (serviceCategory === 'Combos' || serviceCategory === 'Combos e Pacotes') {
-                return false;
-            }
-        }
-
-        // Se é uma categoria exclusiva, só permite um serviço da mesma categoria
-        if (window.EXCLUSIVE_CATEGORIES.includes(category)) {
-            for (const serviceId of selectedServices) {
-                const serviceCategory = this.getServiceCategory(serviceId);
-                if (serviceCategory === category) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
     static showError(message, container) {
-        if (!container || !message) return;
+        if (!container) return;
         const errorDiv = document.createElement('div');
         errorDiv.className = 'service-error';
         errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
@@ -125,6 +88,3 @@ window.ServiceUtils = class ServiceUtils {
         setTimeout(() => errorDiv.remove(), 5000);
     }
 };
-
-// Indicar que os serviços foram carregados
-console.log('Serviços carregados com sucesso');

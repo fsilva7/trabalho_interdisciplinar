@@ -33,134 +33,227 @@
     position: relative;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 1rem;
     transition: all 0.2s ease-out;
     background: #fff;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .service-item:hover {
     border-color: #2563eb;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
-    transform: translateY(-1px);
+}
+
+.service-item label {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    width: 100%;
+    user-select: none;
+    transition: all 0.2s ease-out;
+    border-radius: 8px;
+}
+
+.service-item label:hover {
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.salon-theme .service-item label:hover {
+    background-color: rgba(236, 72, 153, 0.05);
 }
 
 .service-item input[type="checkbox"],
 .service-item input[type="radio"] {
-    position: absolute;
-    opacity: 0;
+    margin-top: 0.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
     cursor: pointer;
-    height: 0;
-    width: 0;
+    position: relative;
+    z-index: 2;
+    opacity: 1;
+    pointer-events: auto;
+    transition: all 0.2s ease-out;
 }
 
-.service-item label {
-    display: block;
-    cursor: pointer;
-    user-select: none;
+.service-item input[type="checkbox"]:disabled,
+.service-item input[type="radio"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.service-item input[type="checkbox"]:focus,
+.service-item input[type="radio"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .service-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .service-name {
     font-weight: 600;
     color: #1e293b;
+    margin-bottom: 0.5rem;
 }
 
 .service-details {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
+    gap: 1rem;
     color: #64748b;
-    margin-top: 0.5rem;
-    gap: 0.5rem;
+    font-size: 0.9rem;
 }
 
-/* Estado selecionado */
+/* Estados de seleção */
 .service-item.selected {
-    border-color: #2563eb;
     background-color: #f0f7ff;
+    border-color: #2563eb;
 }
 
 .service-item.selected .service-name {
     color: #2563eb;
 }
 
-/* Estilos específicos para o salão */
+.service-item input[type="checkbox"]:checked,
+.service-item input[type="radio"]:checked {
+    accent-color: #2563eb;
+}
+
+/* Tema do salão */
 .salon-theme .service-item:hover {
     border-color: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.1);
 }
 
 .salon-theme .service-item.selected {
-    border-color: #ec4899;
     background-color: #fdf2f8;
+    border-color: #ec4899;
 }
 
 .salon-theme .service-item.selected .service-name {
     color: #ec4899;
 }
 
-.salon-theme .service-category h3 {
+.salon-theme .service-item input[type="checkbox"]:checked,
+.salon-theme .service-item input[type="radio"]:checked {
+    accent-color: #ec4899;
+}
+
+/* Efeitos de hover e foco */
+.service-item:hover .service-name {
+    color: #2563eb;
+}
+
+.salon-theme .service-item:hover .service-name {
     color: #ec4899;
 }
 
-/* Indicador de seleção */
-.service-item::after {
-    content: '';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #e2e8f0;
-    border-radius: 50%;
-    transition: all 0.2s ease-out;
+.service-item input[type="checkbox"]:focus + label,
+.service-item input[type="radio"]:focus + label {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
 }
 
-.salon-theme .service-item.selected::after {
-    background-color: #ec4899;
-    border-color: #ec4899;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z'/%3E%3C/svg%3E");
-    background-size: 12px;
-    background-repeat: no-repeat;
-    background-position: center;
+.salon-theme .service-item input[type="checkbox"]:focus + label,
+.salon-theme .service-item input[type="radio"]:focus + label {
+    outline-color: #ec4899;
 }
 
 /* Booking Summary Styles */
 .booking-summary {
-    background: #f8f9fa;
-    border-radius: 8px;
+    background: #f8fafc;
+    border-radius: 12px;
     padding: 1.5rem;
     margin: 2rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .booking-summary h3 {
     margin: 0 0 1rem 0;
-    color: #333;
+    color: #1e293b;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .summary-content {
-    color: #666;
+    color: #475569;
+}
+
+.empty-selection {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #64748b;
+}
+
+.empty-selection i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #94a3b8;
+}
+
+.empty-selection .hint {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    color: #94a3b8;
+}
+
+.category-header {
+    font-weight: 600;
+    color: #1e293b;
+    padding: 1rem 0 0.5rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-header:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: none;
 }
 
 .summary-item {
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    align-items: center;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease-out;
 }
 
-.summary-item:last-child {
-    border-bottom: none;
+.summary-item:hover {
+    border-color: #94a3b8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.summary-item .service-info {
+    flex: 1;
+}
+
+.remove-service {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    color: #94a3b8;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease-out;
+}
+
+.remove-service:hover {
+    color: #ef4444;
+    background: #fee2e2;
 }
 
 .summary-total {

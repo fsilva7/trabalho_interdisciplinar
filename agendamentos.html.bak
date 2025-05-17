@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Agendamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css" />    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="services.css" />
+</head>
+<body class="scheduling-page">
+    <div class="scheduling-wrapper"><nav>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </nav>
+        
+        <header>
+            <h1><i class="fas fa-calendar-alt"></i> Sistema de Agendamentos</h1>
+            <p class="subtitle">Agende seu horário de forma rápida e fácil</p>
+        </header>        <div class="form-container">
+            <div class="services-section">
+                <!-- Service selector will be injected here by JavaScript -->
+            </div>            <form id="appointmentForm" onsubmit="return false;">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="nome" placeholder="Seu nome" required />
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="telefone" placeholder="(00) 00000-0000" required 
+                           pattern="\([0-9]{2}\) [0-9]{5}-[0-9]{4}"
+                           title="Digite um telefone no formato (00) 00000-0000" />
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-calendar"></i>
+                    <input type="text" id="data" placeholder="Selecione a data" required readonly />
+                </div>
+
+                <div class="horarios-disponiveis dropdown-horarios">
+                    <label><i class="fas fa-clock"></i> Horários Disponíveis</label>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                            Selecione um horário
+                        </button>
+                        <div class="dropdown-menu" id="dropdownHorarios" aria-labelledby="dropdownMenuButton">
+                            <!-- Opções preenchidas via JavaScript -->
+                        </div>
+                        <input type="hidden" id="hora" name="hora" required />
+                        <input type="hidden" id="selectedServices" name="selectedServices" required />
+                        <input type="hidden" id="totalPrice" name="totalPrice" required />
+                        <input type="hidden" id="totalDuration" name="totalDuration" required />
+                    </div>
+                </div>
+
+                <div class="booking-summary">
+                    <h3><i class="fas fa-receipt"></i> Resumo do Agendamento</h3>
+                    <div class="summary-content">
+                        <!-- Summary will be populated by JavaScript -->
+                    </div>
+                </div>                <button type="submit" class="submit-button">
+                    <i class="fas fa-calendar-plus"></i> Agendar Horário
+                </button>
+            </form>
+        </div>        <div id="confirmationMessage" class="confirmation-message" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <h3>Agendamento Realizado!</h3>
+            <p>Em breve entraremos em contato para confirmar seu horário.</p>
+        </div>
+
+        <div class="appointments-list" id="appointmentsList">
+            <!-- Lista de agendamentos será preenchida via JavaScript -->
+        </div>
+    </div>    <footer>
+        <p>&copy; 2025 Sistema de Agendamentos. Todos os direitos reservados.</p>
+    </footer>    <!-- Bibliotecas externas -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <!-- Dados e utilitários -->
+    <script src="js/services.js"></script>
+    
+    <!-- Componentes da interface -->
+    <script src="js/selector.js"></script>
+    <script src="js/time-slots.js"></script>
+      <!-- Inicialização -->
+    <script>
+        // Aguardar carregamento do DOM e dependências
+        document.addEventListener('DOMContentLoaded', function() {
+            const servicesSection = document.querySelector('.services-section');
+            if (!servicesSection) {
+                console.error('Seção de serviços não encontrada');
+                showError('Erro ao carregar a página. Por favor, recarregue.');
+                return;
+            }
+
+            // Clear any existing content and show loading indicator
+            servicesSection.innerHTML = `
+                <div class="loading-message">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Carregando serviços...</p>
+                </div>
+            `;
+
+            try {
+                // Verify dependencies are loaded
+                if (typeof window.ServiceUtils === 'undefined') {
+                    throw new Error('ServiceUtils não está carregado');
+                }
+                if (typeof window.SERVICES === 'undefined') {
+                    throw new Error('SERVICES não está carregado');
+                }
+                if (typeof window.SERVICE_TYPES === 'undefined') {
+                    throw new Error('SERVICE_TYPES não está carregado');
+                }
+
+                // Get sector from URL or use default
+                const params = new URLSearchParams(window.location.search);
+                const sector = params.get('setor') || 'barbearia';
+                console.log('Setor selecionado:', sector);
+
+                // Determinar tipo de serviço
+                const serviceType = sector === 'barbearia' ? 'barbershop' : 'salon';
+                console.log('Tipo de serviço:', serviceType);
+
+                // Criar seletor de serviços
+                const selector = window.createServiceSelector(serviceType);
+                if (selector) {
+                    servicesSection.innerHTML = ''; // Limpar mensagens de erro anteriores
+                    servicesSection.appendChild(selector);
+                    console.log('Seletor de serviços criado com sucesso');
+                } else {
+                    throw new Error('Falha ao criar seletor de serviços');
+                }
+            } catch (error) {
+                console.error('Erro ao inicializar serviços:', error);
+                servicesSection.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Não foi possível carregar os serviços. Por favor, tente novamente mais tarde.</p>
+                        <p class="error-details">${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+
+        function showError(message) {
+            const servicesSection = document.querySelector('.services-section');
+            if (servicesSection) {
+                servicesSection.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+    
+    <!-- Estilos -->    <style>
+        .service-selector {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .error-message {
+            padding: 1.5rem;
+            margin: 1rem 0;
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            color: #dc2626;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .error-message i {
+            font-size: 2rem;
+        }
+
+        .error-details {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            color: #ef4444;
+        }
+
+        .loading-message {
+            padding: 2rem;
+            text-align: center;
+            color: #4B5563;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .loading-message i {
+            font-size: 2rem;
+            color: #3B82F6;
+        }
+
+        .retry-button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .retry-button:hover {
+            background-color: #b91c1c;
+        }
+
+        .loading-message {
+            padding: 2rem;
+            text-align: center;
+            color: #4B5563;
+        }
+
+        .loading-message i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #3B82F6;
+        }
+    </style>
+
+    <!-- Scripts principais -->
+    <script src="script.js"></script>
+</body>
+</html>

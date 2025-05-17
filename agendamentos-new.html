@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <tit    <!-- Scripts da aplicação -->
-    <script src="js/services-fixed.js"></script>
-    <script src="js/selector-new.js"></script>
-    <script src="js/summary.js"></script>
-    <script src="js/time-slots.js"></script>
-    <script src="script.js"></script>stema de Agendamentos</title>
+    <title>Sistema de Agendamentos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css" />
@@ -22,51 +17,6 @@
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .appointment-datetime {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-
-        .appointment-datetime .date-info,
-        .appointment-datetime .time-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.25rem 0;
-            color: #495057;
-        }
-
-        .appointment-datetime i {
-            color: #0d6efd;
-        }
-
-        .selected-services {
-            margin-bottom: 1rem;
-        }
-        
-        .selected-services .service-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .summary-total {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid #ddd;
-            font-weight: bold;
-        }
-        
-        .empty-selection {
-            text-align: center;
-            color: #666;
-            padding: 1rem;
         }
         
         .error-message {
@@ -208,12 +158,60 @@
 
     <footer>
         <p>&copy; 2025 Sistema de Agendamentos. Todos os direitos reservados.</p>
-    </footer>    <!-- Bibliotecas externas -->
+    </footer>
+
+    <!-- Bibliotecas externas -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <!-- Scripts da aplicação -->
-    <script src="js/services-fixed.js"></script>
-    <script src="js/selector-new.js"></script>
-    <script src="js/time-slots-new.js"></script>
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <!-- Script de inicialização -->
+    <script>
+        // Função para carregar scripts em sequência
+        function loadScriptInOrder(scripts, onComplete) {
+            if (scripts.length === 0) {
+                onComplete();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = scripts[0];
+            script.onload = function() {
+                console.log(`Script carregado: ${scripts[0]}`);
+                loadScriptInOrder(scripts.slice(1), onComplete);
+            };
+            script.onerror = function(error) {
+                console.error(`Erro ao carregar ${scripts[0]}:`, error);
+                const servicesSection = document.querySelector('.services-section');
+                if (servicesSection) {
+                    servicesSection.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Erro ao carregar recursos necessários. Por favor, recarregue a página.</p>
+                            <button onclick="window.location.reload()" class="retry-button">
+                                <i class="fas fa-sync"></i> Tentar novamente
+                            </button>
+                        </div>
+                    `;
+                }
+            };
+            document.body.appendChild(script);
+        }
+
+        // Scripts para carregar em ordem
+        const scripts = [
+            'js/services.js',
+            'js/selector.js',
+            'js/time-slots.js',
+            'js/init.js'
+        ];
+
+        // Iniciar carregamento quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', function() {
+            loadScriptInOrder(scripts, function() {
+                console.log('Todos os scripts carregados, iniciando aplicação...');
+                window.initializeApp();
+            });
+        });
+    </script>
 </body>
 </html>
