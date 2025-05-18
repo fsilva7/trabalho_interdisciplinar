@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>Sistema de Agendamentos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../src/css/style.css" />
 </head>
 <body class="landing-page">
     <div class="container landing-container">
@@ -103,81 +103,6 @@
 
     <footer class="landing-footer">
         <p>&copy; 2025 Sistema de Agendamentos | Desenvolvido com <i class="fas fa-heart"></i></p>
-    </footer>    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const buttons = document.querySelectorAll('.landing-btn');
-            let lastTouchTime = 0;
-            
-            // Gerenciamento de estados dos botões
-            buttons.forEach(btn => {
-                // Mouse Events
-                if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-                    const effect = btn.querySelector('.btn-hover-effect');
-                    
-                    btn.addEventListener('mousemove', e => {
-                        const rect = btn.getBoundingClientRect();
-                        const x = ((e.clientX - rect.left) / btn.clientWidth) * 100;
-                        const y = ((e.clientY - rect.top) / btn.clientHeight) * 100;
-                        effect.style.setProperty('--x', x + '%');
-                        effect.style.setProperty('--y', y + '%');
-                    });
-
-                    btn.addEventListener('mouseenter', () => {
-                        effect.style.opacity = '1';
-                    });
-
-                    btn.addEventListener('mouseleave', () => {
-                        effect.style.opacity = '0';
-                    });
-                }
-
-                // Touch Events
-                btn.addEventListener('touchstart', function(e) {
-                    lastTouchTime = Date.now();
-                    this.classList.add('active');
-                }, { passive: true });
-
-                btn.addEventListener('touchend', function(e) {
-                    const touchDuration = Date.now() - lastTouchTime;
-                    
-                    // Previne cliques acidentais muito rápidos
-                    if (touchDuration < 50) {
-                        e.preventDefault();
-                        return;
-                    }
-                    
-                    this.classList.remove('active');
-                    
-                    // Adiciona um pequeno atraso antes de navegar
-                    setTimeout(() => {
-                        if (this.hasAttribute('href')) {
-                            window.location.href = this.getAttribute('href');
-                        }
-                    }, 50);
-                }, { passive: false });
-
-                // Limpa estado ativo se o toque for cancelado
-                btn.addEventListener('touchcancel', function() {
-                    this.classList.remove('active');
-                });
-            });
-
-            // Previne comportamento de "fantasma" em dispositivos touch
-            document.addEventListener('touchmove', function(e) {
-                const activeBtn = document.querySelector('.landing-btn.active');
-                if (activeBtn) {
-                    const touch = e.touches[0];
-                    const btnRect = activeBtn.getBoundingClientRect();
-                    
-                    if (touch.clientX < btnRect.left || 
-                        touch.clientX > btnRect.right || 
-                        touch.clientY < btnRect.top || 
-                        touch.clientY > btnRect.bottom) {
-                        activeBtn.classList.remove('active');
-                    }
-                }
-            }, { passive: true });
-        });
-    </script>
+    </footer>    <script src="../src/js/script.js"></script>
 </body>
 </html>
