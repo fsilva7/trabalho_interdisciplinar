@@ -28,12 +28,12 @@ document.getElementById('showLogin').onclick = function(e) {
 
 document.getElementById('registerForm').onsubmit = async function(e) {
     e.preventDefault();
-    const user = document.getElementById('registerUser').value;
+    const user = document.getElementById('registerUser').value; // nome
     const email = document.getElementById('registerEmail').value;
     const pass = document.getElementById('registerPass').value;
     if (!user || !email || !pass) return;
     try {
-        const res = await fetch('backend/register_user.php', {
+        const res = await fetch('../src/backend/register_user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user, email, pass })
@@ -52,20 +52,20 @@ document.getElementById('registerForm').onsubmit = async function(e) {
 
 document.getElementById('loginForm').onsubmit = async function(e) {
     e.preventDefault();
-    const user = document.getElementById('loginUser').value;
+    const email = document.getElementById('loginUser').value; // agora é email
     const pass = document.getElementById('loginPass').value;
     try {
-        const res = await fetch('backend/login_user.php', {
+        const res = await fetch('../src/backend/login_user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user, pass })
+            body: JSON.stringify({ email, pass }) // envia email e senha
         });
         const data = await res.json();
         if (data.success) {
             localStorage.setItem('adminLogged', '1');
-            window.location.href = 'admin_agendamentos.html';
+            window.location.href = 'admin.html';
         } else {
-            showError(data.error || 'Usuário ou senha inválidos!');
+            showError(data.error || 'E-mail ou senha inválidos!');
         }
     } catch (err) {
         showError('Erro ao fazer login!');
@@ -74,6 +74,6 @@ document.getElementById('loginForm').onsubmit = async function(e) {
 
 function showError(msg) {
     const err = document.getElementById('loginError');
-    err.textContent = msg;
+    err.querySelector('span').textContent = msg;
     err.style.display = 'block';
 }

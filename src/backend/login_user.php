@@ -9,16 +9,16 @@ require_once 'db.php';
 
 try {
     $data = json_decode(file_get_contents('php://input'), true);
-    if (!isset($data['user'], $data['pass'])) {
+    if (!isset($data['email'], $data['pass'])) {
         throw new Exception('Dados incompletos');
     }
-    $user = $data['user'];
+    $email = $data['email'];
     $pass = $data['pass'];
-    $stmt = $conn->prepare('SELECT password FROM admin_users WHERE username = ? OR email = ?');
-    $stmt->execute([$user, $user]);
+    $stmt = $conn->prepare('SELECT senha FROM users WHERE email = ?');
+    $stmt->execute([$email]);
     $row = $stmt->fetch();
-    if (!$row || !password_verify($pass, $row['password'])) {
-        throw new Exception('Usuário ou senha inválidos!');
+    if (!$row || !password_verify($pass, $row['senha'])) {
+        throw new Exception('Email ou senha inválidos!');
     }
     echo json_encode(['success' => true]);
 } catch (Exception $e) {

@@ -16,12 +16,12 @@ try {
     $email = $data['email'];
     $pass = password_hash($data['pass'], PASSWORD_DEFAULT);
     // Verifica se já existe
-    $stmt = $conn->prepare('SELECT 1 FROM admin_users WHERE username = ? OR email = ?');
+    $stmt = $conn->prepare('SELECT 1 FROM users WHERE nome = ? OR email = ?');
     $stmt->execute([$user, $email]);
     if ($stmt->fetch()) {
         throw new Exception('Usuário ou e-mail já existe!');
     }
-    $stmt = $conn->prepare('INSERT INTO admin_users (username, email, password) VALUES (?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO users (nome, email, senha) VALUES (?, ?, ?)');
     $stmt->execute([$user, $email, $pass]);
     echo json_encode(['success' => true]);
 } catch (Exception $e) {
