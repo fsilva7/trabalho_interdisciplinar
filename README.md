@@ -10,12 +10,12 @@ senha: tipo VARCHAR;
 
 criado_em: tipo TIMESTAMP, com valor padrão como CURRENT_TIMESTAMP e permitido ser nulo (NULL).
 
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE users (  
+    id INT AUTO_INCREMENT PRIMARY KEY,  
+    nome VARCHAR(100) NOT NULL,  
+    email VARCHAR(100) NOT NULL UNIQUE,  
+    senha VARCHAR(255) NOT NULL,  
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP  
+);  
 
 Certifique-se de que o banco de dados agendamentos e a tabela users estejam criados corretamente no phpMyAdmin antes de iniciar a aplicação.
